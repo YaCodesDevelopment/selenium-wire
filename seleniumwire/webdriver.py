@@ -32,7 +32,7 @@ SELENIUM_V4 = parse_version(getattr(selenium, '__version__', '0')) >= parse_vers
 
 try:
     # noinspection PyUnresolvedReferences
-    from undetected_chromedriver import ChromeOptions
+    from undetected_chromedriver import ChromeOptions  # noqa
 except ImportError:
     pass
 

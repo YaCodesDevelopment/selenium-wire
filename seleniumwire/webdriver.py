@@ -1,11 +1,4 @@
-from typing import Any, Dict
-
-import selenium
-
-try:
-    from packaging.version import parse as parse_version
-except ImportError:
-    from pkg_resources import parse_version
+import logging
 
 from selenium.webdriver import ActionChains  # noqa
 from selenium.webdriver import FirefoxOptions  # noqa
@@ -225,7 +218,24 @@ class _SeleniumWireChrome(InspectRequestsMixin, DriverCommonMixin, _Chrome):
 
         # Prevent Chrome from bypassing the Selenium Wire proxy
         # for localhost addresses.
+<<<<<<< HEAD
         chrome_options.add_argument('--proxy-bypass-list=<-loopback>')
+||||||| parent of 25193b0 (Use undetected_chromedriver.v2 by default)
+        chrome_options.add_argument('proxy-bypass-list=<-loopback>')
+=======
+        chrome_options.add_argument('--proxy-bypass-list=<-loopback>')
+
+        try:
+            uc  # noqa
+            log.info('Using undetected_chromedriver')
+
+            # We need to point Chrome back to Selenium Wire
+            addr, port = urlsafe_address(self.proxy.address())
+            chrome_options.add_argument(f'--proxy-server={addr}:{port}')
+        except NameError:
+            pass
+
+>>>>>>> 25193b0 (Use undetected_chromedriver.v2 by default)
         kwargs['options'] = chrome_options
 
         if mitm_proxy is None:

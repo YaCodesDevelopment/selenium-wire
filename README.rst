@@ -707,6 +707,134 @@ Then in your code, import the ``seleniumwire.undetected_chromedriver`` package:
         seleniumwire_options={}
     )
 
+<<<<<<< HEAD
+||||||| parent of 25193b0 (Use undetected_chromedriver.v2 by default)
+The first time you run the webdriver it will download and patch the ChromeDriver binary in the background.
+
+You can check that undetected_chromedriver is being used by looking for the log messages it generates. You just need to ensure that you've activated logging at the top of your script or program first, for example:
+
+.. code:: python
+
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    logging.getLogger('undetected_chromedriver').level = logging.INFO
+
+    from seleniumwire import webdriver
+
+    ... code ...
+
+You should see messages similar to:
+
+.. code:: bash
+
+    INFO:undetected_chromedriver:Selenium patched. Safe to import Chrome / ChromeOptions
+    INFO:undetected_chromedriver:starting undetected_chromedriver.Chrome((), ...
+
+Note that this functionality is currently experimental.
+
+Backends
+~~~~~~~~
+
+Selenium Wire allows you to change the backend component that performs request capture. Currently two backends are supported: the backend that ships with Selenium Wire (the default) and the mitmproxy backend.
+
+The default backend is adequate for most purposes. However, in certain cases you may find you get better performance with the mitmproxy backend.
+
+The mitmproxy backend relies upon the powerful open source `mitmproxy proxy server`_ being installed in your environment.
+
+.. _`mitmproxy proxy server`: https://mitmproxy.org/
+
+To switch to the mitmproxy backend, first install the mitmproxy package:
+
+.. code:: bash
+
+    pip install mitmproxy
+
+Once installed, set the ``backend`` option in Selenium Wire's options to ``mitmproxy``:
+
+.. code:: python
+
+    options = {
+        'backend': 'mitmproxy'
+    }
+    driver = webdriver.Chrome(seleniumwire_options=options)
+
+You can pass `mitmproxy specific options`_ to the mitmproxy backend by prefixing them with **mitm_**. For example, to change the location of the mitmproxy configuration directory which lives in your home folder by default:
+
+.. _`mitmproxy specific options`: https://docs.mitmproxy.org/stable/concepts-options/#available-options
+
+.. code:: python
+
+    options = {
+        'backend': 'mitmproxy',
+        'mitm_confdir': '/tmp/.mitmproxy'  # Switch the location to /tmp
+    }
+    driver = webdriver.Chrome(seleniumwire_options=options)
+
+Mitmproxy includes options that can help with performance such as ``mitm_stream_large_bodies``. Setting this to a low value (e.g. '1k') has been shown to improve performance, in conjunction with the use of ``driver.scopes``.
+
+*Note that the mitmproxy backend won't work with upstream SOCKS proxies.*
+=======
+The first time you run the webdriver it will download and patch the ChromeDriver binary in the background.
+
+You can check that undetected_chromedriver is being used by looking for the presence of a log message. You just need to ensure that you've activated logging at the top of your script or program first, for example:
+
+.. code:: python
+
+    import logging
+    logging.basicConfig(level=logging.INFO)
+
+    ... code ...
+
+Then when you run Selenium Wire you should see the following message near the top of the terminal output:
+
+.. code:: bash
+
+    INFO:seleniumwire.webdriver:Using undetected_chromedriver
+
+Note that this functionality is currently experimental.
+
+Backends
+~~~~~~~~
+
+Selenium Wire allows you to change the backend component that performs request capture. Currently two backends are supported: the backend that ships with Selenium Wire (the default) and the mitmproxy backend.
+
+The default backend is adequate for most purposes. However, in certain cases you may find you get better performance with the mitmproxy backend.
+
+The mitmproxy backend relies upon the powerful open source `mitmproxy proxy server`_ being installed in your environment.
+
+.. _`mitmproxy proxy server`: https://mitmproxy.org/
+
+To switch to the mitmproxy backend, first install the mitmproxy package:
+
+.. code:: bash
+
+    pip install mitmproxy
+
+Once installed, set the ``backend`` option in Selenium Wire's options to ``mitmproxy``:
+
+.. code:: python
+
+    options = {
+        'backend': 'mitmproxy'
+    }
+    driver = webdriver.Chrome(seleniumwire_options=options)
+
+You can pass `mitmproxy specific options`_ to the mitmproxy backend by prefixing them with **mitm_**. For example, to change the location of the mitmproxy configuration directory which lives in your home folder by default:
+
+.. _`mitmproxy specific options`: https://docs.mitmproxy.org/stable/concepts-options/#available-options
+
+.. code:: python
+
+    options = {
+        'backend': 'mitmproxy',
+        'mitm_confdir': '/tmp/.mitmproxy'  # Switch the location to /tmp
+    }
+    driver = webdriver.Chrome(seleniumwire_options=options)
+
+Mitmproxy includes options that can help with performance such as ``mitm_stream_large_bodies``. Setting this to a low value (e.g. '1k') has been shown to improve performance, in conjunction with the use of ``driver.scopes``.
+
+*Note that the mitmproxy backend won't work with upstream SOCKS proxies.*
+>>>>>>> 25193b0 (Use undetected_chromedriver.v2 by default)
 
 Certificates
 ~~~~~~~~~~~~

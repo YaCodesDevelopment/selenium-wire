@@ -7,6 +7,7 @@ from pathlib import Path
 from unittest import TestCase
 from unittest.mock import call, mock_open, patch
 
+<<<<<<< HEAD
 from seleniumwire.utils import (
     build_proxy_args,
     decode,
@@ -15,6 +16,13 @@ from seleniumwire.utils import (
     get_upstream_proxy,
     urlsafe_address,
 )
+||||||| parent of cd2912e (Support both versions of undetected_chromedriver)
+from seleniumwire.utils import (extract_cert, extract_cert_and_key,
+                                get_upstream_proxy)
+=======
+from seleniumwire.utils import (extract_cert, extract_cert_and_key,
+                                get_upstream_proxy, urlsafe_address)
+>>>>>>> cd2912e (Support both versions of undetected_chromedriver)
 
 
 class GetUpstreamProxyTest(TestCase):
@@ -321,6 +329,7 @@ class ExtractCertTest(TestCase):
             extract_cert_and_key(Path('some', 'path'), check_exists=False)
 
         m_open.assert_called_once()
+<<<<<<< HEAD
 
 
 def test_urlsafe_address_ipv4():
@@ -352,3 +361,14 @@ class DecodeTest(TestCase):
 
         with self.assertRaises(ValueError):
             self.assertEqual(decode(data, 'gzip'), data)
+||||||| parent of cd2912e (Support both versions of undetected_chromedriver)
+=======
+
+
+def test_urlsafe_address_ipv4():
+    assert urlsafe_address(('192.168.0.1', 9999)) == ('192.168.0.1', 9999)
+
+
+def test_urlsafe_address_ipv6():
+    assert urlsafe_address(('::ffff:127.0.0.1', 9999, 0, 0)) == ('[::ffff:127.0.0.1]', 9999)
+>>>>>>> cd2912e (Support both versions of undetected_chromedriver)

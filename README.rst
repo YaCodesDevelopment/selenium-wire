@@ -694,12 +694,27 @@ If you wish to take advantage of this make sure you have undetected_chromedriver
 
     pip install undetected-chromedriver
 
+<<<<<<< HEAD
 Then in your code, import the ``seleniumwire.undetected_chromedriver`` package:
+||||||| parent of cd2912e (Support both versions of undetected_chromedriver)
+Then just use ``webdriver.Chrome()`` as you would normally, making sure that you import it from the ``seleniumwire`` package. If you use ``ChromeOptions`` this should also be imported from the ``seleniumwire`` package:
+=======
+Then you can select the version of undetected_chromedriver you want to use by importing ``Chrome`` and ``ChromeOptions`` from the appropriate package.
+
+For undetected_chromedriver version 1:
+>>>>>>> cd2912e (Support both versions of undetected_chromedriver)
 
 .. code:: python
 
+<<<<<<< HEAD
     import seleniumwire.undetected_chromedriver as uc
+||||||| parent of cd2912e (Support both versions of undetected_chromedriver)
+    from seleniumwire import webdriver
+=======
+    from seleniumwire.undetected_chromedriver import Chrome, ChromeOptions
+>>>>>>> cd2912e (Support both versions of undetected_chromedriver)
 
+<<<<<<< HEAD
     chrome_options = uc.ChromeOptions()
 
     driver = uc.Chrome(
@@ -777,21 +792,27 @@ Mitmproxy includes options that can help with performance such as ``mitm_stream_
 The first time you run the webdriver it will download and patch the ChromeDriver binary in the background.
 
 You can check that undetected_chromedriver is being used by looking for the presence of a log message. You just need to ensure that you've activated logging at the top of your script or program first, for example:
+||||||| parent of cd2912e (Support both versions of undetected_chromedriver)
+    chrome_options = webdriver.ChromeOptions()
+    sw_options = {...}
+
+    driver = webdriver.Chrome(  # Optimized for bot detection
+        options=chrome_options,
+        seleniumwire_options=sw_options
+    )
+
+The first time you run the webdriver it will download and patch the ChromeDriver binary in the background.
+
+You can check that undetected_chromedriver is being used by looking for the presence of a log message. You just need to ensure that you've activated logging at the top of your script or program first, for example:
+=======
+For undetected_chromedriver version 2:
+>>>>>>> cd2912e (Support both versions of undetected_chromedriver)
 
 .. code:: python
 
-    import logging
-    logging.basicConfig(level=logging.INFO)
+    from seleniumwire.undetected_chromedriver.v2 import Chrome, ChromeOptions
 
-    ... code ...
-
-Then when you run Selenium Wire you should see the following message near the top of the terminal output:
-
-.. code:: bash
-
-    INFO:seleniumwire.webdriver:Using undetected_chromedriver
-
-Note that this functionality is currently experimental.
+See the `undetected_chromedriver docs <https://github.com/ultrafunkamsterdam/undetected-chromedriver>`_ for differences between the two versions.
 
 Backends
 ~~~~~~~~

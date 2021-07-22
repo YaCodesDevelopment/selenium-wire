@@ -552,6 +552,7 @@ Selenium Wire works by redirecting browser traffic through an internal proxy ser
 
 .. _`request interceptor`: #intercepting-requests-and-responses
 
+<<<<<<< HEAD
 Request Storage
 ~~~~~~~~~~~~~~~
 
@@ -588,6 +589,35 @@ If you're concerned about the amount of memory that may be consumed, you can res
 
 When the max size is reached, older requests are discarded as newer requests arrive. Keep in mind that if you restrict the number of requests being stored, requests may have disappeared from storage by the time you come to retrieve them with ``driver.requests`` or ``driver.wait_for_request()`` etc.
 
+||||||| parent of 928dfa3 (Update README for request storage)
+=======
+In-Memory Request Storage
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default, captured requests and responses are stored in the system temp folder (that's ``/tmp`` on Linux and usually ``C:\Users\<username>\AppData\Local\Temp`` on Windows) underneath a sub-folder called ``.seleniumwire``. You can change this location with the ``request_storage_base_dir`` `option`_.
+
+Selenium Wire also supports storing requests and responses in memory only, which may be useful in certain situations - e.g. if you're running short lived Docker containers and don't want the overhead of disk persistence. You can enable in-memory storage with the ``request_storage`` option:
+
+.. code:: python
+
+    options = {
+        'request_storage': 'memory'  # Store requests and responses in memory only
+    }
+    driver = webdriver.Chrome(seleniumwire_options=options)
+
+If you're concerned about the amount of memory that may be consumed, you can restrict the number of requests that are stored with the ``request_storage_max_size`` option:
+
+.. code:: python
+
+    options = {
+        'request_storage': 'memory',
+        'request_storage_max_size': 100  # Store no more than 100 requests in memory
+    }
+    driver = webdriver.Chrome(seleniumwire_options=options)
+
+When the max size is reached, older requests are discarded as newer requests arrive. Be mindful that if you restrict the number of requests being stored, requests may have disappeared from storage by the time you come to retrieve them with ``driver.requests`` or ``driver.wait_for_request()`` etc.
+
+>>>>>>> 928dfa3 (Update README for request storage)
 Proxies
 ~~~~~~~
 
@@ -922,7 +952,13 @@ A summary of all options that can be passed to Selenium Wire via the ``seleniumw
     driver = webdriver.Chrome(seleniumwire_options=options)
 
 ``disable_encoding``
+<<<<<<< HEAD
     Ask the server to send back uncompressed data. ``False`` by default. When ``True`` this sets the ``Accept-Encoding`` header to ``identity`` for all outbound requests. Note that it won't always work - sometimes the server may ignore it.
+||||||| parent of 928dfa3 (Update README for request storage)
+    Ask the server to send back un-compressed data. When ``True`` this sets the ``Accept-Encoding`` header to ``identity`` for all outbound requests. Note that it won't always work - sometimes the server may ignore it. The default is ``False``.
+=======
+    Ask the server to send back un-compressed data. ``False`` by default. When ``True`` this sets the ``Accept-Encoding`` header to ``identity`` for all outbound requests. Note that it won't always work - sometimes the server may ignore it.
+>>>>>>> 928dfa3 (Update README for request storage)
 
 .. code:: python
 
@@ -1016,6 +1052,10 @@ A summary of all options that can be passed to Selenium Wire via the ``seleniumw
     }
     driver = webdriver.Chrome(seleniumwire_options=options)
 
+Note Selenium Wire can also store captured requests and responses `in memory`_.
+
+.. _`in memory`: #in-memory-request-storage
+
 ``suppress_connection_errors``
     Whether to suppress connection related tracebacks. ``True`` by default, meaning that harmless errors that sometimes occur at browser shutdown do not alarm users. When suppressed, the connection error message is logged at DEBUG level without a traceback. Set to ``False`` to allow exception propagation and see full tracebacks.
 
@@ -1028,7 +1068,7 @@ A summary of all options that can be passed to Selenium Wire via the ``seleniumw
 
 ``request_storage_base_dir``
     Completely disable the use of selenium-wire. The default is ``True``.
-    
+
 .. code:: python
 
     driver = webdriver.Chrome(use_seleniumwire=False)

@@ -8,6 +8,7 @@ from unittest import TestCase
 from unittest.mock import call, mock_open, patch
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 from seleniumwire.utils import (
     build_proxy_args,
     decode,
@@ -23,6 +24,18 @@ from seleniumwire.utils import (extract_cert, extract_cert_and_key,
 from seleniumwire.utils import (extract_cert, extract_cert_and_key,
                                 get_upstream_proxy, urlsafe_address)
 >>>>>>> cd2912e (Support both versions of undetected_chromedriver)
+||||||| parent of caea075 (Implement on-the-fly proxy switch)
+from seleniumwire.utils import decode, extract_cert, extract_cert_and_key, get_upstream_proxy, urlsafe_address
+=======
+from seleniumwire.utils import (
+    build_proxy_args,
+    decode,
+    extract_cert,
+    extract_cert_and_key,
+    get_upstream_proxy,
+    urlsafe_address,
+)
+>>>>>>> caea075 (Implement on-the-fly proxy switch)
 
 
 class GetUpstreamProxyTest(TestCase):

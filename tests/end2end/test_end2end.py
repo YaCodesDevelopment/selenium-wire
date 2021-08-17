@@ -533,6 +533,7 @@ def test_switch_proxy_on_the_fly(driver_path, chrome_options, httpbin, httpproxy
 
             driver.get(f'{httpbin}/html')
 
+<<<<<<< HEAD
             assert 'This passed through a authenticated http proxy' in driver.page_source
 
         assert driver.last_request.cert
@@ -576,3 +577,15 @@ def test_socket_timeout(driver, httpbin):
     driver.get(f'{httpbin}/html')
 
     assert driver.requests
+||||||| parent of caea075 (Implement on-the-fly proxy switch)
+            assert 'This passed through a http proxy' in driver.page_source
+
+            with create_httpproxy(port=8087, auth='test:test') as authproxy:
+                driver.proxy.https = str(authproxy)  # Switch the proxy on the same driver instance
+
+                driver.get(f'{httpbin}/html')
+
+                assert 'This passed through a authenticated http proxy' in driver.page_source
+=======
+            assert 'This passed through a authenticated http proxy' in driver.page_source
+>>>>>>> caea075 (Implement on-the-fly proxy switch)

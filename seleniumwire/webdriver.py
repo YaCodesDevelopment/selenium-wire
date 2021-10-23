@@ -1,5 +1,7 @@
 from typing import Any, Dict
 
+import selenium
+from packaging import version
 from selenium.webdriver import ActionChains  # noqa
 from selenium.webdriver import FirefoxOptions  # noqa
 from selenium.webdriver import FirefoxProfile  # noqa
@@ -28,6 +30,8 @@ try:
     from undetected_chromedriver import ChromeOptions  # noqa
 except ImportError:
     pass
+
+USING_SELENIUM_V4 = version.parse(getattr(selenium, '__version__', '0')) >= version.parse('4.0.0')
 
 
 class DriverCommonMixin:

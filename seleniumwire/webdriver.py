@@ -31,7 +31,7 @@ try:
 except ImportError:
     pass
 
-USING_SELENIUM_V4 = version.parse(getattr(selenium, '__version__', '0')) >= version.parse('4.0.0')
+SELENIUM_V4 = version.parse(getattr(selenium, '__version__', '0')) >= version.parse('4.0.0')
 
 
 class DriverCommonMixin:

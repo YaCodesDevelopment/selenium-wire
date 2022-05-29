@@ -236,8 +236,14 @@ class _SeleniumWireChrome(InspectRequestsMixin, DriverCommonMixin, _Chrome):
             config = self._set_backend(mitm_proxy, seleniumwire_options)
 
         if seleniumwire_options.get('auto_config', True):
-            for key, value in config.items():
-                chrome_options.set_capability(key, value)
+            try:
+                for key, value in config.items():
+                    chrome_options.set_capability(key, value)
+            except AttributeError:
+                # Earlier versions of the Chrome webdriver API require the
+                # DesiredCapabilities to be explicitly passed.
+                caps = kwargs.setdefault('desired_capabilities', DesiredCapabilities.CHROME.copy())
+                caps.update(config)
 
         super().__init__(*args, **kwargs)
 

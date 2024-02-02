@@ -585,7 +585,6 @@ Selenium Wire works by redirecting browser traffic through an internal proxy ser
 
 .. _`request interceptor`: #intercepting-requests-and-responses
 
-<<<<<<< HEAD
 Request Storage
 ~~~~~~~~~~~~~~~
 
@@ -622,35 +621,6 @@ If you're concerned about the amount of memory that may be consumed, you can res
 
 When the max size is reached, older requests are discarded as newer requests arrive. Keep in mind that if you restrict the number of requests being stored, requests may have disappeared from storage by the time you come to retrieve them with ``driver.requests`` or ``driver.wait_for_request()`` etc.
 
-||||||| parent of 928dfa3 (Update README for request storage)
-=======
-In-Memory Request Storage
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-By default, captured requests and responses are stored in the system temp folder (that's ``/tmp`` on Linux and usually ``C:\Users\<username>\AppData\Local\Temp`` on Windows) underneath a sub-folder called ``.seleniumwire``. You can change this location with the ``request_storage_base_dir`` `option`_.
-
-Selenium Wire also supports storing requests and responses in memory only, which may be useful in certain situations - e.g. if you're running short lived Docker containers and don't want the overhead of disk persistence. You can enable in-memory storage with the ``request_storage`` option:
-
-.. code:: python
-
-    options = {
-        'request_storage': 'memory'  # Store requests and responses in memory only
-    }
-    driver = webdriver.Chrome(seleniumwire_options=options)
-
-If you're concerned about the amount of memory that may be consumed, you can restrict the number of requests that are stored with the ``request_storage_max_size`` option:
-
-.. code:: python
-
-    options = {
-        'request_storage': 'memory',
-        'request_storage_max_size': 100  # Store no more than 100 requests in memory
-    }
-    driver = webdriver.Chrome(seleniumwire_options=options)
-
-When the max size is reached, older requests are discarded as newer requests arrive. Be mindful that if you restrict the number of requests being stored, requests may have disappeared from storage by the time you come to retrieve them with ``driver.requests`` or ``driver.wait_for_request()`` etc.
-
->>>>>>> 928dfa3 (Update README for request storage)
 Proxies
 ~~~~~~~
 
@@ -757,27 +727,12 @@ If you wish to take advantage of this make sure you have undetected_chromedriver
 
     pip install undetected-chromedriver
 
-<<<<<<< HEAD
 Then in your code, import the ``seleniumwire.undetected_chromedriver`` package:
-||||||| parent of cd2912e (Support both versions of undetected_chromedriver)
-Then just use ``webdriver.Chrome()`` as you would normally, making sure that you import it from the ``seleniumwire`` package. If you use ``ChromeOptions`` this should also be imported from the ``seleniumwire`` package:
-=======
-Then you can select the version of undetected_chromedriver you want to use by importing ``Chrome`` and ``ChromeOptions`` from the appropriate package.
-
-For undetected_chromedriver version 1:
->>>>>>> cd2912e (Support both versions of undetected_chromedriver)
 
 .. code:: python
 
-<<<<<<< HEAD
     import seleniumwire.undetected_chromedriver as uc
-||||||| parent of cd2912e (Support both versions of undetected_chromedriver)
-    from seleniumwire import webdriver
-=======
-    from seleniumwire.undetected_chromedriver import Chrome, ChromeOptions
->>>>>>> cd2912e (Support both versions of undetected_chromedriver)
 
-<<<<<<< HEAD
     chrome_options = uc.ChromeOptions()
 
     driver = uc.Chrome(
@@ -785,8 +740,6 @@ For undetected_chromedriver version 1:
         seleniumwire_options={}
     )
 
-<<<<<<< HEAD
-||||||| parent of 25193b0 (Use undetected_chromedriver.v2 by default)
 The first time you run the webdriver it will download and patch the ChromeDriver binary in the background.
 
 You can check that undetected_chromedriver is being used by looking for the log messages it generates. You just need to ensure that you've activated logging at the top of your script or program first, for example:
@@ -985,13 +938,7 @@ A summary of all options that can be passed to Selenium Wire via the ``seleniumw
     driver = webdriver.Chrome(seleniumwire_options=options)
 
 ``disable_encoding``
-<<<<<<< HEAD
     Ask the server to send back uncompressed data. ``False`` by default. When ``True`` this sets the ``Accept-Encoding`` header to ``identity`` for all outbound requests. Note that it won't always work - sometimes the server may ignore it.
-||||||| parent of 928dfa3 (Update README for request storage)
-    Ask the server to send back un-compressed data. When ``True`` this sets the ``Accept-Encoding`` header to ``identity`` for all outbound requests. Note that it won't always work - sometimes the server may ignore it. The default is ``False``.
-=======
-    Ask the server to send back un-compressed data. ``False`` by default. When ``True`` this sets the ``Accept-Encoding`` header to ``identity`` for all outbound requests. Note that it won't always work - sometimes the server may ignore it.
->>>>>>> 928dfa3 (Update README for request storage)
 
 .. code:: python
 

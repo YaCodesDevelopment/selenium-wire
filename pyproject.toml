@@ -4,6 +4,7 @@ version = "5.1.0"
 description = ""
 authors = ["bissli <bissli@xyz.com>"]
 readme = "README.rst"
+packages = [{ include = "seleniumwire" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"

@@ -13,12 +13,20 @@ from unittest.mock import patch
 
 import pytest
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 
 import seleniumwire
 from seleniumwire import webdriver
 from seleniumwire.thirdparty.mitmproxy.exceptions import ServerException
 from tests import utils as testutils
+from smart_webdriver_manager import ChromeDriverManager
+
+
+@pytest.fixture(scope='module')
+def smart_webdriver_manager():
+    manager = ChromeDriverManager(100)
+    yield manager
 
 
 @pytest.fixture(scope='module')
@@ -60,14 +68,15 @@ def socksproxy():
 
 
 @pytest.fixture
-def driver_path():
-    return str(Path(__file__).parent / Path('linux', 'chromedriver'))
+def driver_path(smart_webdriver_manager):
+    return smart_webdriver_manager.get_driver()
 
 
 @pytest.fixture
-def chrome_options():
+def chrome_options(smart_webdriver_manager):
     options = webdriver.ChromeOptions()
-    options.binary_location = testutils.get_headless_chromium()
+    options.binary_location = smart_webdriver_manager.get_browser()
+    options.add_argument('--headless')
     return options
 
 
@@ -82,13 +91,12 @@ def create_driver(
     driver_path,
     chrome_options,
     seleniumwire_options=None,
-    desired_capabilities=None,
 ):
+    driver_service = Service(executable_path=driver_path)
     driver = webdriver.Chrome(
-        executable_path=driver_path,
+        service=driver_service,
         options=chrome_options,
         seleniumwire_options=seleniumwire_options,
-        desired_capabilities=desired_capabilities,
     )
     try:
         yield driver
@@ -543,7 +551,6 @@ def test_switch_proxy_on_the_fly(driver_path, chrome_options, httpbin, httpproxy
 
             driver.get(f'{httpbin}/html')
 
-<<<<<<< HEAD
             assert 'This passed through a authenticated http proxy' in driver.page_source
 
         assert driver.last_request.cert
@@ -587,15 +594,7 @@ def test_socket_timeout(driver, httpbin):
     driver.get(f'{httpbin}/html')
 
     assert driver.requests
-||||||| parent of caea075 (Implement on-the-fly proxy switch)
-            assert 'This passed through a http proxy' in driver.page_source
 
-            with create_httpproxy(port=8087, auth='test:test') as authproxy:
-                driver.proxy.https = str(authproxy)  # Switch the proxy on the same driver instance
 
-                driver.get(f'{httpbin}/html')
-
-                assert 'This passed through a authenticated http proxy' in driver.page_source
-=======
-            assert 'This passed through a authenticated http proxy' in driver.page_source
->>>>>>> caea075 (Implement on-the-fly proxy switch)
+if __name__ == '__main__':
+    __import__('pytest').main([__file__])

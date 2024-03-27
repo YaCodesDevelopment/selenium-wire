@@ -1,5 +1,4 @@
 import os
-import shutil
 import subprocess
 from pathlib import Path
 
@@ -61,23 +60,6 @@ class Httpbin:
 
     def __str__(self):
         return self.url
-
-
-def get_headless_chromium() -> str:
-    """Get the path to a headless chromium executable uncompressing the
-    executable if required.
-
-    Returns: The path.
-    """
-    bin_path = Path(__file__).parent / Path('end2end', 'linux', 'headless-chromium')
-
-    if not bin_path.exists():
-        zip_path = bin_path.with_suffix('.zip')
-        print(f'Unzipping {zip_path}')
-        shutil.unpack_archive(str(zip_path), bin_path.parent)
-        os.chmod(bin_path, 0o755)
-
-    return str(bin_path)
 
 
 class Proxy:

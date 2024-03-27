@@ -27,15 +27,6 @@ from selenium.webdriver import Safari as _Safari
 
 from seleniumwire import backend, utils
 from seleniumwire.inspect import InspectRequestsMixin
-from seleniumwire.server import MitmProxy
-
-SELENIUM_V4 = parse_version(getattr(selenium, '__version__', '0')) >= parse_version('4.0.0')
-
-try:
-    # noinspection PyUnresolvedReferences
-    from undetected_chromedriver import ChromeOptions  # noqa
-except ImportError:
-    pass
 
 SELENIUM_V4 = parse_version(getattr(selenium, '__version__', '0')) >= parse_version('4.0.0')
 
@@ -52,22 +43,8 @@ class DriverCommonMixin:
             port=seleniumwire_options.get('port', 0),
             options=seleniumwire_options,
         )
-        return self._get_config(self.backend, seleniumwire_options)
 
-    def _set_backend(self, mitm_proxy: MitmProxy, seleniumwire_options: Dict[str, Any]) -> Dict[str, Any]:
-        """Set the backend proxy server and return its configuration
-        in a dictionary
-
-        :param mitm_proxy: proxy server
-        :param seleniumwire_options:
-        :return:
-        """
-        self.backend = mitm_proxy
-        return self._get_config(self.backend, seleniumwire_options)
-
-    @staticmethod
-    def _get_config(mitm_proxy: MitmProxy, seleniumwire_options: Dict[str, Any]) -> Dict[str, Any]:
-        addr, port = utils.urlsafe_address(mitm_proxy.address())
+        addr, port = utils.urlsafe_address(self.backend.address())
 
         config = {
             'proxy': {
@@ -149,15 +126,14 @@ class DriverCommonMixin:
             )
 
 
-class _SeleniumWireFirefox(InspectRequestsMixin, DriverCommonMixin, _Firefox):
-    """Extends the Firefox webdriver to provide additional methods for inspecting requests."""
+class Firefox(InspectRequestsMixin, DriverCommonMixin, _Firefox):
+    """Extend the Firefox webdriver to provide additional methods for inspecting requests."""
 
-    def __init__(self, *args, seleniumwire_options=None, mitm_proxy: MitmProxy = None, **kwargs):
+    def __init__(self, *args, seleniumwire_options=None, **kwargs):
         """Initialise a new Firefox WebDriver instance.
 
         Args:
             seleniumwire_options: The seleniumwire options dictionary.
-            mitm_proxy: if you pass your own MitmProxy, seleniumwire will use it insteadof creating a new one
         """
         if seleniumwire_options is None:
             seleniumwire_options = {}
@@ -173,10 +149,7 @@ class _SeleniumWireFirefox(InspectRequestsMixin, DriverCommonMixin, _Firefox):
         firefox_options.set_preference('network.proxy.allow_hijacking_localhost', True)
         firefox_options.accept_insecure_certs = True
 
-        if mitm_proxy is None:
-            config = self._setup_backend(seleniumwire_options)
-        else:
-            config = self._set_backend(mitm_proxy, seleniumwire_options)
+        config = self._setup_backend(seleniumwire_options)
 
         if seleniumwire_options.get('auto_config', True):
             if SELENIUM_V4:
@@ -206,15 +179,14 @@ class _SeleniumWireFirefox(InspectRequestsMixin, DriverCommonMixin, _Firefox):
         super().__init__(*args, **kwargs)
 
 
-class _SeleniumWireChrome(InspectRequestsMixin, DriverCommonMixin, _Chrome):
-    """Extends the Chrome webdriver to provide additional methods for inspecting requests."""
+class Chrome(InspectRequestsMixin, DriverCommonMixin, _Chrome):
+    """Extend the Chrome webdriver to provide additional methods for inspecting requests."""
 
-    def __init__(self, *args, seleniumwire_options=None, mitm_proxy: MitmProxy = None, **kwargs):
+    def __init__(self, *args, seleniumwire_options=None, **kwargs):
         """Initialise a new Chrome WebDriver instance.
 
         Args:
             seleniumwire_options: The seleniumwire options dictionary.
-            mitm_proxy: if you pass your own MitmProxy, seleniumwire will use it insteadof creating a new one
         """
         if seleniumwire_options is None:
             seleniumwire_options = {}
@@ -231,10 +203,7 @@ class _SeleniumWireChrome(InspectRequestsMixin, DriverCommonMixin, _Chrome):
         chrome_options.add_argument('--proxy-bypass-list=<-loopback>')
         kwargs['options'] = chrome_options
 
-        if mitm_proxy is None:
-            config = self._setup_backend(seleniumwire_options)
-        else:
-            config = self._set_backend(mitm_proxy, seleniumwire_options)
+        config = self._setup_backend(seleniumwire_options)
 
         if seleniumwire_options.get('auto_config', True):
             try:
@@ -249,15 +218,14 @@ class _SeleniumWireChrome(InspectRequestsMixin, DriverCommonMixin, _Chrome):
         super().__init__(*args, **kwargs)
 
 
-class _SeleniumWireSafari(InspectRequestsMixin, DriverCommonMixin, _Safari):
-    """Extends the Safari webdriver to provide additional methods for inspecting requests."""
+class Safari(InspectRequestsMixin, DriverCommonMixin, _Safari):
+    """Extend the Safari webdriver to provide additional methods for inspecting requests."""
 
-    def __init__(self, seleniumwire_options=None, *args, mitm_proxy: MitmProxy = None, **kwargs):
+    def __init__(self, seleniumwire_options=None, *args, **kwargs):
         """Initialise a new Safari WebDriver instance.
 
         Args:
             seleniumwire_options: The seleniumwire options dictionary.
-            mitm_proxy: if you pass your own MitmProxy, seleniumwire will use it insteadof creating a new one
         """
         if seleniumwire_options is None:
             seleniumwire_options = {}
@@ -266,27 +234,21 @@ class _SeleniumWireSafari(InspectRequestsMixin, DriverCommonMixin, _Safari):
         # DesiredCapabilities API, and thus has to be configured manually.
         # Whatever port number is chosen for that manual configuration has to
         # be passed in the options.
-        assert mitm_proxy is not None or 'port' in seleniumwire_options,\
-            'You must set a port number in the seleniumwire_options ' \
-            '(or pass your own MitmProxy in mitm_proxy param)'
+        assert 'port' in seleniumwire_options, 'You must set a port number in the seleniumwire_options'
 
-        if mitm_proxy is None:
-            self._setup_backend(seleniumwire_options)
-        else:
-            self._set_backend(mitm_proxy, seleniumwire_options)
+        self._setup_backend(seleniumwire_options)
 
         super().__init__(*args, **kwargs)
 
 
-class _SeleniumWireEdge(InspectRequestsMixin, DriverCommonMixin, _Edge):
-    """Extends the Edge webdriver to provide additional methods for inspecting requests."""
+class Edge(InspectRequestsMixin, DriverCommonMixin, _Edge):
+    """Extend the Edge webdriver to provide additional methods for inspecting requests."""
 
-    def __init__(self, seleniumwire_options=None, *args, mitm_proxy: MitmProxy = None, **kwargs):
+    def __init__(self, seleniumwire_options=None, *args, **kwargs):
         """Initialise a new Edge WebDriver instance.
 
         Args:
             seleniumwire_options: The seleniumwire options dictionary.
-            mitm_proxy: if you pass your own MitmProxy, seleniumwire will use it insteadof creating a new one
         """
         if seleniumwire_options is None:
             seleniumwire_options = {}
@@ -298,31 +260,39 @@ class _SeleniumWireEdge(InspectRequestsMixin, DriverCommonMixin, _Edge):
         except KeyError:
             edge_options = EdgeOptions()
 
-        if mitm_proxy is None:
-            self._setup_backend(seleniumwire_options)
-        else:
-            self._set_backend(mitm_proxy, seleniumwire_options)
+        # Prevent Edge from bypassing the Selenium Wire proxy
+        # for localhost addresses.
+        edge_options.add_argument('--proxy-bypass-list=<-loopback>')
+        kwargs['options'] = edge_options
+
+        config = self._setup_backend(seleniumwire_options)
+
+        if seleniumwire_options.get('auto_config', True):
+            try:
+                for key, value in config.items():
+                    edge_options.set_capability(key, value)
+            except AttributeError:
+                # Earlier versions of the Chromium webdriver API require the
+                # DesiredCapabilities to be explicitly passed.
+                caps = kwargs.setdefault('desired_capabilities', DesiredCapabilities.CHROME.copy())
+                caps.update(config)
 
         super().__init__(*args, **kwargs)
 
 
-class _SeleniumWireRemote(InspectRequestsMixin, DriverCommonMixin, _Remote):
-    """Extends the Remote webdriver to provide additional methods for inspecting requests."""
+class Remote(InspectRequestsMixin, DriverCommonMixin, _Remote):
+    """Extend the Remote webdriver to provide additional methods for inspecting requests."""
 
-    def __init__(self, *args, seleniumwire_options=None, mitm_proxy: MitmProxy = None, **kwargs):
+    def __init__(self, *args, seleniumwire_options=None, **kwargs):
         """Initialise a new Firefox WebDriver instance.
 
         Args:
             seleniumwire_options: The seleniumwire options dictionary.
-            mitm_proxy: if you pass your own MitmProxy, seleniumwire will use it insteadof creating a new one
         """
         if seleniumwire_options is None:
             seleniumwire_options = {}
 
-        if mitm_proxy is None:
-            config = self._setup_backend(seleniumwire_options)
-        else:
-            config = self._set_backend(mitm_proxy, seleniumwire_options)
+        config = self._setup_backend(seleniumwire_options)
 
         if seleniumwire_options.get('auto_config', True):
             capabilities = kwargs.get('desired_capabilities')
@@ -336,62 +306,3 @@ class _SeleniumWireRemote(InspectRequestsMixin, DriverCommonMixin, _Remote):
             kwargs['desired_capabilities'] = capabilities
 
         super().__init__(*args, **kwargs)
-
-
-class Firefox(InspectRequestsMixin, DriverCommonMixin, _Firefox):
-    def __new__(cls, *args, use_seleniumwire=True, **kwargs):
-        clazz = _SeleniumWireFirefox if use_seleniumwire else _Firefox
-        return clazz(*args, **kwargs)
-
-
-class Chrome(InspectRequestsMixin, DriverCommonMixin, _Chrome):
-    def __new__(cls, *args, use_seleniumwire=True, **kwargs):
-        clazz = _SeleniumWireChrome if use_seleniumwire else _Chrome
-
-        try:
-            # noinspection PyUnresolvedReferences
-            import undetected_chromedriver as uc
-
-            if 'chrome2use' not in kwargs:
-                kwargs['chrome2use'] = clazz
-
-            clazz = uc.Chrome
-        except ImportError:
-            pass
-
-        return clazz(*args, **kwargs)
-
-
-class Safari(InspectRequestsMixin, DriverCommonMixin, _Safari):
-    def __new__(cls, *args, use_seleniumwire=True, **kwargs):
-        clazz = _SeleniumWireSafari if use_seleniumwire else _Safari
-        return clazz(*args, **kwargs)
-
-
-class Edge(InspectRequestsMixin, DriverCommonMixin, _Edge):
-    def __new__(cls, *args, use_seleniumwire=True, **kwargs):
-        clazz = _SeleniumWireEdge if use_seleniumwire else _Edge
-        return clazz(*args, **kwargs)
-
-
-class Remote(InspectRequestsMixin, DriverCommonMixin, _Remote):
-    def __new__(cls, *args, use_seleniumwire=True, **kwargs):
-        clazz = _SeleniumWireRemote if use_seleniumwire else _Remote
-        return clazz(*args, **kwargs)
-
-
-def urlsafe_address(address):
-    """Make an address safe to use in a URL.
-
-    Args:
-        address: A tuple of address information.
-    Returns:
-        A 2-tuple of url-safe (address, port)
-    """
-    addr, port, *rest = address
-
-    if rest:
-        # An IPv6 address needs to be surrounded by square brackets
-        addr = f'[{addr}]'
-
-    return addr, port

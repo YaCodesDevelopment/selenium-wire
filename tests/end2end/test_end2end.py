@@ -415,8 +415,12 @@ def test_no_auto_config_manual_proxy(driver_path, chrome_options, httpbin):
     Selenium Wire using a different IP/host than what Selenium Wire uses
     by default. E.g. A dynamic hostname for a container setup.
     """
-    chrome_options.add_argument('--ignore-certificate-errors')
-    chrome_options.add_argument('--proxy-server=localhost:8088')
+    chrome_options.set_capability('acceptInsecureCerts', True)
+    chrome_options.set_capability('proxy', {
+        'proxyType': 'manual',
+        'sslProxy': '{}:{}'.format('localhost', 8088),
+    })
+    # or chrome_options.add_argument('--proxy-server=localhost:8088')
 
     sw_options = {
         'auto_config': False,

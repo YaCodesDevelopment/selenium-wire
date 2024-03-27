@@ -12,11 +12,6 @@ from selenium.webdriver import FirefoxOptions  # noqa
 from selenium.webdriver import FirefoxProfile  # noqa
 from selenium.webdriver import Proxy  # noqa
 
-try:
-    # TouchActions does not exist in Selenium 4.1.1
-    from selenium.webdriver import TouchActions  # noqa
-except ImportError:
-    pass
 from selenium.webdriver import Chrome as _Chrome
 from selenium.webdriver import ChromeOptions, DesiredCapabilities
 from selenium.webdriver import Edge as _Edge

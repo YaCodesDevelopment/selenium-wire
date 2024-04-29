@@ -8,7 +8,7 @@ packages = [{ include = "seleniumwire" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-blinker = "^1.7.0"
+blinker = "1.7.0" # 1.8.0+ breaks mitmproxy
 brotli = "^1.1.0"
 certifi = "^2024.2.2"
 h2 = "^4.1.0"

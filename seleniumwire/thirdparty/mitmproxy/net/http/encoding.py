@@ -61,7 +61,7 @@ def decode(encoded: Union[None, str, bytes], encoding: str, errors: str = 'stric
         try:
             decoded = custom_decode[encoding](encoded)
         except KeyError:
-            decoded = codecs.decode(encoded, encoding, errors)  # type: ignore
+            decoded = codecs.decode(str(encoded), encoding, errors)  # type: ignore
         if encoding in ("gzip", "deflate", "br", "zstd"):
             _cache = CachedDecode(encoded, encoding, errors, decoded)
         return decoded
